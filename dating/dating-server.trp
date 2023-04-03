@@ -1,18 +1,25 @@
 (* Starting file for the server *)
 
 import lists
-let fun server () = (* TODO: finish this *)
-         let val _ = receive [hn ("NEWPROFILE", _ )
-                                => printString "New profile received"
+let 
+    fun server () = (* TODO: finish this *)
+        let 
+            val data = receive [hn ("NEWPROFILE", data)
+                                => printString "New profile received"; data
                              ]
-         in server ()
-         end
+            val (profile, agent, pid) = data
+            val (lev, name, year, gender, interests) = profile
+            val _ = printWithLabels ("Test ", interests)
+        in 
+            server ()
+        end
 
     (* Our main function starts the server and then requests the
        dispatcher to send some clients this way. *)
 
     fun main () =       
-        let val thisNode = node (self ())
+        let 
+            val thisNode = node (self ())
             val _ = printString ("Running node with identifier: " ^ thisNode)
             val _ =  register ("datingServer", spawn server, authority)
         in  (* TODO: Feel free to comment out the next line
@@ -21,5 +28,6 @@ let fun server () = (* TODO: finish this *)
             send (whereis ("@dispatcher", "dispatcher"), ("DISPATCH", thisNode)); 
             ()
         end
-in main ()
+in 
+    main ()
 end
