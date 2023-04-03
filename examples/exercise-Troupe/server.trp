@@ -9,7 +9,8 @@ import stdio
 
 let 
 
-    fun match userPasswordPid1 userPasswordPid2  = let
+    fun match userPasswordPid1 userPasswordPid2  = 
+        let
             
             val (usr1, pwd1, _) = userPasswordPid1
             val (usr2, pwd2, _) = userPasswordPid2
@@ -26,17 +27,20 @@ let
                     val _ = print m
                     val (_, _, pid1) = userPasswordPid1 
                     val _ = send (pid1, ("MATCH", (false, m)))
-                  in ()
+                  in 
+                    ()
                 end
                 else let
                     val _ = print m
                     val (_, _, pid1) = userPasswordPid1 
                     val _ = send (pid1, ("MATCH", (true, m)))                    
-                  in ()
+                  in 
+                    ()
                 end
             
-            in ()
-            end
+        in 
+            ()
+        end
 
     fun isPresent upp l = map (match upp) l
 
@@ -49,10 +53,12 @@ let
             val (u, p, _) = newMsg
             val _ = printWithLabels ("I received username and password:", u, p)
             val _ = isPresent newMsg db
-        in server (newMsg::db)
+        in 
+            server (newMsg::db)
         end
     
     val serverId = spawn (fn () => server [])
     val _ = register ("server", serverId, authority) 
-in ()
+in 
+    ()
 end

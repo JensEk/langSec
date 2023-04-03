@@ -1,17 +1,35 @@
 (* Starting file for the server *)
 
 import lists
-let 
-    fun server () = (* TODO: finish this *)
+let
+
+    fun match user1 user2  = 
+        let
+
+            val (profile1, agent1, pid1) = user1
+            val (lev1, name1, year1, gender1, interests1) = profile1
+            val (profile2, agent2, pid2) = user2
+            val (lev2, name2, year2, gender2, interests2) = profile2
+            val _ = printWithLabels ("Comparing names:", name1, name2)
+
+            val _ = printWithLabels ("Comparing pid:", pid1, pid2)
+            val (t, m) = if (name1 = name2 andalso pid1 = pid2) then
+                         (true, "The user already exists")
+                         else (false, "Name and pid added correctly")
+       
+        in 
+            ()
+        end
+    
+    
+    fun server db =
         let 
             val data = receive [hn ("NEWPROFILE", data)
                                 => printString "New profile received"; data
                              ]
-            val (profile, agent, pid) = data
-            val (lev, name, year, gender, interests) = profile
-            val _ = printWithLabels ("Test ", interests)
+            val _ = map (match data) db
         in 
-            server ()
+            server (data::db)
         end
 
     (* Our main function starts the server and then requests the
@@ -21,7 +39,8 @@ let
         let 
             val thisNode = node (self ())
             val _ = printString ("Running node with identifier: " ^ thisNode)
-            val _ =  register ("datingServer", spawn server, authority)
+            val serverId = spawn (fn () => server [])
+            val _ =  register ("datingServer", serverId, authority)
         in  (* TODO: Feel free to comment out the next line
                      while you develop your solution and work on a few 
                      custom clients;  *)
