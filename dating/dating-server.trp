@@ -1,0 +1,25 @@
+(* Starting file for the server *)
+
+import lists
+let fun server () = (* TODO: finish this *)
+         let val _ = receive [hn ("NEWPROFILE", _ )
+                                => printString "New profile received"
+                             ]
+         in server ()
+         end
+
+    (* Our main function starts the server and then requests the
+       dispatcher to send some clients this way. *)
+
+    fun main () =       
+        let val thisNode = node (self ())
+            val _ = printString ("Running node with identifier: " ^ thisNode)
+            val _ =  register ("datingServer", spawn server, authority)
+        in  (* TODO: Feel free to comment out the next line
+                     while you develop your solution and work on a few 
+                     custom clients;  *)
+            send (whereis ("@dispatcher", "dispatcher"), ("DISPATCH", thisNode)); 
+            ()
+        end
+in main ()
+end

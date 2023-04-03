@@ -1,0 +1,58 @@
+import lists
+import declassifyutil 
+import stdio
+
+ 
+
+(* The server maintains a database that is represented as a list, where     *)
+(* each entry in the database is a pair of (username, password) for every user. *)
+
+let 
+
+    fun match userPasswordPid1 userPasswordPid2  = let
+            
+            val (usr1, pwd1, _) = userPasswordPid1
+            val (usr2, pwd2, _) = userPasswordPid2
+            
+            val _ = printWithLabels ("Comparing username:", usr1, usr2)
+            
+            val _ = printWithLabels ("Comparing password:", pwd1, pwd2)
+            val (t, m) = if (usr1 = usr2 andalso pwd1 = pwd2) then
+                         (true, "The user already exists")
+                         else (false, "Username and password added correctly")
+           
+            val _ =  if t
+                then let 
+                    val _ = print m
+                    val (_, _, pid1) = userPasswordPid1 
+                    val _ = send (pid1, ("MATCH", (false, m)))
+                  in ()
+                end
+                else let
+                    val _ = print m
+                    val (_, _, pid1) = userPasswordPid1 
+                    val _ = send (pid1, ("MATCH", (true, m)))                    
+                  in ()
+                end
+            
+            in ()
+            end
+
+    fun isPresent upp l = map (match upp) l
+
+
+    fun server db = 
+        let 
+            val _ = printString "Waiting for new requests"
+            val newMsg = receive [ hn ("NEWREQUEST",  newMsg) => newMsg ]
+            val _ = printWithLabels ("I received", newMsg)
+            val (u, p, _) = newMsg
+            val _ = printWithLabels ("I received username and password:", u, p)
+            val _ = isPresent newMsg db
+        in server (newMsg::db)
+        end
+    
+    val serverId = spawn (fn () => server [])
+    val _ = register ("server", serverId, authority) 
+in ()
+end

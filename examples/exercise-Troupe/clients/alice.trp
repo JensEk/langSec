@@ -1,0 +1,26 @@
+import stdio
+import declassifyutil
+
+let fun loop () =
+                let  val _ = print "Waiting for response..."
+                    val newResponse = receive [hn ("MATCH", newResponse) => newResponse]
+                    val (r, m) = newResponse
+                    val _ = printWithLabels ("Response message", m)
+                in loop ()
+                end
+
+
+    fun aliceClient server_id =
+        let val levAlice  = `{alice}`
+            val usernameAlice = "alice" raisedTo levAlice
+            val passwordAlice = 1234 raisedTo levAlice
+
+            val _ = send (server_id, ("NEWREQUEST", (usernameAlice, passwordAlice, self ())))
+
+            val _ = print "Alice sent out her username and password to the server"
+        in loop ()
+        end
+ 
+    val serverId = whereis ("@id-server", "server")
+in spawn (fn () => aliceClient serverId)
+end
