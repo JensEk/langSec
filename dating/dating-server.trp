@@ -5,18 +5,36 @@ let
 
     fun match user1 user2  = 
         let
-
             val (profile1, agent1, pid1) = user1
             val (lev1, name1, year1, gender1, interests1) = profile1
             val (profile2, agent2, pid2) = user2
             val (lev2, name2, year2, gender2, interests2) = profile2
+           
             val _ = printWithLabels ("Comparing names:", name1, name2)
 
-            val _ = printWithLabels ("Comparing pid:", pid1, pid2)
-            val (t, m) = if (name1 = name2 andalso pid1 = pid2) then
-                         (true, "The user already exists")
-                         else (false, "Name and pid added correctly")
-       
+            val tmp = pinipush authority (*declassify label BL from here...*)
+            val (preference1, maybeProfile1) = agent1(profile2)
+            val (preference2, maybeProfile2) = agent2(profile1)
+            val _ = pinipop tmp (*...to here*)
+
+            (* Vi måste sänka label på preference1 och 2 innan vi ger oss in på IF, annars
+            får vi en branch som beror på båda -> problem vid send()*)
+            
+            val _ = if (preference1 andalso preference2) 
+                    then let
+                       
+                        val _ = printWithLabels ("It's a match!")
+        
+                        val _ = send (pid1, ("NEWMATCH", maybeProfile2))
+                        val _ = send (pid2, ("NEWMATCH", maybeProfile1))
+                    in
+                        ()
+                    end
+                    else let
+                        val _ = printWithLabels ("No match!")
+                    in
+                        ()
+                    end
         in 
             ()
         end
@@ -32,9 +50,9 @@ let
             server (data::db)
         end
 
+
     (* Our main function starts the server and then requests the
        dispatcher to send some clients this way. *)
-
     fun main () =       
         let 
             val thisNode = node (self ())
