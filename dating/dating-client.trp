@@ -1,4 +1,36 @@
-(* Placeholder for the dating-client. Note that in order to communicate 
-   with your server you will need to create the corresponding trustmap *)
-   
-0
+
+
+import stdio
+import declassifyutil
+
+let
+    fun loop () =
+                let  val _ = print "Waiting for response..."
+                    val newResponse = receive [hn ("NEWMATCH", newResponse) => newResponse]
+                    val _ = printWithLabels ("Response message with following profiles: ", newResponse)
+                in loop ()
+                end
+
+
+    fun aliceClient server_id =
+        let
+
+            val levAlice  = `{alice}`
+            val nameAlice = "alice" raisedTo levAlice
+            val yearAlice = "2023" raisedTo levAlice
+            val genderAlice = "female" raisedTo levAlice
+            val interestsAlice = ["reading", "cooking"]
+            val profileAlice = (levAlice, nameAlice, yearAlice, genderAlice, interestsAlice)
+
+
+
+            val _ = send (server_id, ("NEWPROFILE", (profileAlice, (fn (_) => (false, ())), self ())))
+
+        in
+        loop ()
+        end
+
+    val serverId = whereis ("@id-server", "server")
+in
+spawn (fn () => aliceClient serverId)
+end

@@ -4,21 +4,22 @@ import lists
 import declassifyutil
 let
 
-    fun match user1 user2  = 
+    fun match user1 user2  =
         let
             val (profile1, agent1, pid1) = user1
             val (lev1, name1, year1, gender1, interests1) = profile1
             val (profile2, agent2, pid2) = user2
             val (lev2, name2, year2, gender2, interests2) = profile2
-           
+
             val _ = printWithLabels ("Comparing names:", name1, name2)
-            
+
             (* pinipush momenterly takes away BL labels in order to handle values preference and maybeProfile*)
             val tmp = pinipush authority (*declassify label BL from here...*)
             val (preference1, maybeProfile1) = agent1(profile2)
             val (preference2, maybeProfile2) = agent2(profile1)
             val _ = pinipop tmp (*...to here*)
 
+            val _ = printWithLabels ("Preference 1:", maybeProfile1)
             val _ = if declassify_with_block(preference1 andalso preference2, authority,`{}`)
                     then let
                         val _ = printWithLabels ("It's a match!")
@@ -32,36 +33,36 @@ let
                     in
                         ()
                     end
-        in 
+        in
             ()
         end
-    
-    
+
+
     fun server db =
-        let 
+        let
             val data = receive [hn ("NEWPROFILE", data)
                                 => printString "New profile received"; data
                              ]
             val _ = map (match data) db
-        in 
+        in
             server (data::db)
         end
 
 
     (* Our main function starts the server and then requests the
        dispatcher to send some clients this way. *)
-    fun main () =       
-        let 
+    fun main () =
+        let
             val thisNode = node (self ())
             val _ = printString ("Running node with identifier: " ^ thisNode)
             val serverId = spawn (fn () => server [])
             val _ =  register ("datingServer", serverId, authority)
         in  (* TODO: Feel free to comment out the next line
-                     while you develop your solution and work on a few 
+                     while you develop your solution and work on a few
                      custom clients;  *)
-            send (whereis ("@dispatcher", "dispatcher"), ("DISPATCH", thisNode)); 
+           (* send (whereis ("@dispatcher", "dispatcher"), ("DISPATCH", thisNode)); *)
             ()
         end
-in 
+in
     main ()
 end
