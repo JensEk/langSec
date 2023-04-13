@@ -60,7 +60,7 @@ let
         in  (* TODO: Feel free to comment out the next line
                      while you develop your solution and work on a few
                      custom clients;  *)
-           (* send (whereis ("@dispatcher", "dispatcher"), ("DISPATCH", thisNode)); *)
+            (* send (whereis ("@dispatcher", "dispatcher"), ("DISPATCH", thisNode)); *)
             ()
         end
 in

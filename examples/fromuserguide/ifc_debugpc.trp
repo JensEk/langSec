@@ -1,6 +1,0 @@
-let val x = 1 raisedTo`{secret}`
-    val _ = debugpc() 
-    val x = if x > 2 then receive [] else () 
-    val _ = debugpc() 
-in () 
-end 

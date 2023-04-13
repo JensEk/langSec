@@ -12,6 +12,3 @@ dating-server-own:
 	$(TROUPE)/bin/troupec dating-server.trp -o ./out/dating-server-own.js
 	node $(TROUPE)/rt/built/troupe.js -f=./out/dating-server-own.js --id=../ids/id-server.json --trustmap=../trustmaps/client.json --aliases=aliases.json
 
-
-
-
