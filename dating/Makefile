@@ -1,4 +1,4 @@
-START=$(TROUPE)/network.sh
+
 
 dating-server:
 	$(TROUPE)/bin/troupec dating-server.trp -o ./out/dating-server.js
@@ -13,10 +13,5 @@ dating-server-own:
 	node $(TROUPE)/rt/built/troupe.js -f=./out/dating-server-own.js --id=../ids/id-server.json --trustmap=../trustmaps/client.json --aliases=aliases.json
 
 
-myserver:
-	$(START) dating-server.trp --id=../ids/id-server.json #--trustmap=../trustmaps/client.json --aliases=aliases.json #--debug --debugp2p 
-
-client-alice:
-	$(START) dating-client.trp --id=../ids/id-client1.json --trustmap=../trustmaps/client.json --aliases=aliases.json
 
 

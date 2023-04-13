@@ -3,17 +3,19 @@
 import stdio
 import declassifyutil
 
-let
-    fun loop () =
+let fun loop () =
                 let  val _ = print "Waiting for response..."
                     val newResponse = receive [hn ("NEWMATCH", newResponse) => newResponse]
                     val _ = printWithLabels ("Response message with following profiles: ", newResponse)
-                in loop ()
+                in 
+                    loop ()
                 end
 
 
     fun aliceClient server_id =
         let
+
+            val _ = print "TESTETSTETS"
 
             val levAlice  = `{alice}`
             val nameAlice = "alice" raisedTo levAlice
@@ -22,15 +24,13 @@ let
             val interestsAlice = ["reading", "cooking"]
             val profileAlice = (levAlice, nameAlice, yearAlice, genderAlice, interestsAlice)
 
-
-
             val _ = send (server_id, ("NEWPROFILE", (profileAlice, (fn (_) => (false, ())), self ())))
 
         in
-        loop ()
+            loop ()
         end
 
     val serverId = whereis ("@id-server", "server")
 in
-spawn (fn () => aliceClient serverId)
+    spawn (fn () => aliceClient serverId)
 end
