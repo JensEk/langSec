@@ -1,0 +1,53 @@
+
+
+import stdio
+import declassifyutil
+
+let 
+    fun loop () =
+                let  val _ = print "Waiting for response..."
+                    val newResponse = receive [hn ("NEWMATCH", newResponse) => newResponse]
+                    val _ = printWithLabels ("Response message with following profiles: ", newResponse)
+                in 
+                    loop ()
+                end
+
+
+    fun client server_id =
+        let
+
+            val lev  = `{alice}`
+            val name = "alice" raisedTo lev
+            val year = "2023" raisedTo lev
+            val gender = "female" raisedTo lev
+            val interests = ["reading", "cooking"] raisedTo lev
+            val profile = (lev, name, year, gender, interests)
+
+            val _ = send (server_id, ("NEWPROFILE", (profile, (fn (user_profile) => 
+
+            let
+                (ulev, uname, uyear, ugender, uinterests) = user_profile
+                if
+        
+                name raisedTo "bob"
+
+                else 
+
+                
+            in
+                (preference, maybeProfile)
+            end
+           
+            
+            
+            )
+            , self ())))
+
+        in
+            loop ()
+        end
+    
+    val serverId = whereis ("@id-server", "datingServer")
+in
+    spawn (fn () => client serverId) 
+end
