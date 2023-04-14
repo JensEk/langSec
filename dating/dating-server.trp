@@ -14,7 +14,10 @@ let
             val _ = printWithLabels ("Comparing names:", name1, name2)
 
             (* pinipush momenterly takes away BL labels in order to handle values preference and maybeProfile*)
+            
             val tmp = pinipush authority (*declassify label BL from here...*)
+
+            val _ = debugpc()
             val (preference1, maybeProfile1) = agent1(profile2)
             val (preference2, maybeProfile2) = agent2(profile1)
             val _ = pinipop tmp (*...to here*)
@@ -60,7 +63,7 @@ let
         in  (* TODO: Feel free to comment out the next line
                      while you develop your solution and work on a few
                      custom clients;  *)
-            send (whereis ("@dispatcher", "dispatcher"), ("DISPATCH", thisNode));
+           (* send (whereis ("@dispatcher", "dispatcher"), ("DISPATCH", thisNode)); *)
             ()
         end
 in

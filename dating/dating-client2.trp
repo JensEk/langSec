@@ -1,5 +1,5 @@
 
-
+import lists
 import stdio
 import declassifyutil
 
@@ -21,15 +21,27 @@ let
             val year= "2023" raisedTo lev
             val gender = "male" raisedTo lev
             val interests = ["reading", "ctf", "pokemons"] raisedTo lev
-            val profile = (lev, name, year, gender, interests) raisedTo lev
+            val profile = (lev, name, year, gender, interests)
 
-            val _ = send (server_id, ("NEWPROFILE", (profile, (fn (_) => (false, ())), self ())))
+            val agentfn = fn (levA,nameA,yearA,genderA,interestsA) =>
+                    let 
+                            val (preference, maybeProfile) = if "female" = genderA
+                            then 
+                                map(fn x => declassify_with_block(x, authority, `{}`)) [lev,name,year,gender,interests]
+                                map(fn (x,levx) => x raisedTo levx)[(lev,levA),(name,levA),(year,levA),(gender,levA),(interests,levA)]
+                                (true, (lev,name,year,gender,interests))
+                            else
+                                (false, ())          
+                    in
+                        (preference, maybeProfile)
+                    end
 
+            val _ = send (server_id, ("NEWPROFILE", (profile, agentfn, self () )))
         in
             loop ()
         end
     
-    val serverId = whereis ("@id-server", "datingServer")
+    val serverId = whereis ("@id-server", "datingServer")   
 in
     spawn (fn () => client serverId) 
 end
