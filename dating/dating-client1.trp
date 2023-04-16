@@ -15,22 +15,35 @@ let
 
     fun client server_id =
         let
+
             val lev = `{alice}`
             val name = "alice" raisedTo lev
-            val year= "2023" raisedTo lev
+            val year= 2023 raisedTo lev
             val gender = "female" raisedTo lev
-            val interests = ["reading", "hacking"] raisedTo lev
+            val interests = ["reading", "hacking", "ctf"] raisedTo lev
             val profile = (lev, name, year, gender, interests)
 
             val agentfn = fn (levB,nameB,yearB,genderB,interestsB) =>
                     let 
-                        val (preference, maybeProfile) = if "male" = genderB 
-                            then 
-                                map(fn x => declassify_with_block(x, authority, `{}`)) [lev,name,year,gender,interests]
-                                map(fn (x,levx) => x raisedTo levx)[(lev,levB),(name,levB),(year,levB),(gender,levB),(interests,levB)]
-                                (true, (lev,name,year,gender,interests))
+
+                        val levA = declassify_with_block(lev, authority, `{}`)
+                        val nameA = declassify_with_block(name, authority, `{}`)
+                        val yearA = declassify_with_block(year, authority, `{}`)
+                        val genderA = declassify_with_block(gender, authority, `{}`)
+                        val interestsA = declassify_with_block(interests, authority, `{}`)
+                        
+                        val preference = if "male" = genderB
+                            then
+                                true
                             else
-                                (false, ())         
+                                false
+
+                        val maybeProfile = if (preference) 
+                            then
+                                (map(fn (x,levx) => x raisedTo levx)[(levA,levB),(nameA,levB),(yearA,levB),(genderA,levB),(interestsA,levB)])
+                            else
+                                ()
+                             
                     in
                         (preference, maybeProfile)
                     end

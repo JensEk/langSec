@@ -17,7 +17,6 @@ let
             
             val tmp = pinipush authority (*declassify label BL from here...*)
 
-            val _ = debugpc()
             val (preference1, maybeProfile1) = agent1(profile2)
             val (preference2, maybeProfile2) = agent2(profile1)
             val _ = pinipop tmp (*...to here*)
