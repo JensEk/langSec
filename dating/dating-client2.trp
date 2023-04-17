@@ -5,7 +5,7 @@ import declassifyutil
 
 let 
     fun loop () =
-                let  val _ = print "Waiting for response..."
+                let  val _ = print "Waiting for response for Bob..."
                     val newResponse = receive [hn ("NEWMATCH", newResponse) => newResponse]
                     val _ = printWithLabels ("Response message with following profiles: ", newResponse)
                 in 
@@ -16,6 +16,7 @@ let
     fun client server_id =
         let
 
+            (*Define the profile of the user*)
             val lev = `{bob}`
             val name = "bob" raisedTo lev
             val year = 2023 raisedTo lev
@@ -25,7 +26,8 @@ let
 
             val agentfn = fn (levA,nameA,yearA,genderA,interestsA) =>
                     let 
-                    
+
+                        (*Declassify user data in order to raise it if we get a match*)
                         val levB = declassify_with_block(lev, authority, `{}`)
                         val nameB = declassify_with_block(name, authority, `{}`)
                         val yearB = declassify_with_block(year, authority, `{}`)
@@ -33,26 +35,26 @@ let
                         val interestsB = declassify_with_block(interests, authority, `{}`)
 
                         
-                            
-                        val preference = if (genderA andalso elem("pizza")interestsA)
+                        (*User wants to match on gender and interests*)
+                        val preference = if (genderA andalso elem("ctf")interestsA)
                             then 
                                 true
                             else
                                 false
 
+                        (*if we have a match, raise level inside the list interests*)
                          val interestsBR = if (preference)
                             then
                                 map(fn x => x raisedTo levA)interestsB
                             else
                                 []
                
-
+                        (*if we have a match, raise the users data to the matchning users level*)
                         val maybeProfile = if (preference) 
                             then
                                (levB raisedTo levA, nameB raisedTo levA, yearB raisedTo levA, genderB raisedTo levA, interestsBR raisedTo levA)  
                             else
                                 ()
-
 
                     in
                         (preference, maybeProfile)
