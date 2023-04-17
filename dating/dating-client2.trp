@@ -18,8 +18,8 @@ let
 
             val lev = `{bob}`
             val name = "bob" raisedTo lev
-            val year= 2023 raisedTo lev
-            val gender = "male" raisedTo lev
+            val year = 2023 raisedTo lev
+            val gender = false raisedTo lev
             val interests = ["ctf", "pokemons","travel"] raisedTo lev
             val profile = (lev, name, year, gender, interests)
 
@@ -31,18 +31,28 @@ let
                         val yearB = declassify_with_block(year, authority, `{}`)
                         val genderB = declassify_with_block(gender, authority, `{}`)
                         val interestsB = declassify_with_block(interests, authority, `{}`)
+
+                        
                             
-                        val preference = if ("female" = genderA andalso elem("ctf")interestsA)
+                        val preference = if (genderA andalso elem("pizza")interestsA)
                             then 
                                 true
                             else
                                 false
 
+                         val interestsBR = if (preference)
+                            then
+                                map(fn x => x raisedTo levA)interestsB
+                            else
+                                []
+               
+
                         val maybeProfile = if (preference) 
                             then
-                                (map(fn (x,levx) => x raisedTo levx)[(levB,levA),(nameB,levA),(yearB,levA),(genderB,levA),(interestsB,levA)])
+                               (levB raisedTo levA, nameB raisedTo levA, yearB raisedTo levA, genderB raisedTo levA, interestsBR raisedTo levA)  
                             else
                                 ()
+
 
                     in
                         (preference, maybeProfile)

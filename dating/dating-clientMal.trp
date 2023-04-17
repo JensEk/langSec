@@ -1,35 +1,50 @@
+(* Troupe code for a malicious client that sends a profile with a level that is too high. *)
 
 import lists
 import stdio
 import declassifyutil
 
 let 
-    fun loop () =
-                let  val _ = print "Waiting for response..."
-                    val newResponse = receive [hn ("NEWMATCH", newResponse) => newResponse]
-                    val _ = printWithLabels ("Response message with following profiles: ", newResponse)
-                in 
-                    loop ()
-                end
+    fun loopLevel () =
+                let 
+                    val _ = print "Waiting for LeackedInfo response..."
 
+                    val malResponse = receive [hn ("LeackedInfo", malResponse) => malResponse]
+                    val _ = printWithLabels ("LeackedInfo: ", malResponse)
+                    val (c1) = malResponse
+
+                  
+                in
+                  loopLevel ()
+                end
+    
 
     fun client server_id =
         let
 
-            val lev = `{malicous}`
-            val name = "malicous" raisedTo lev
-            val year = 2023 raisedTo lev
-            val gender = "male" raisedTo lev
-            val interests = ["ctf", "pokemons","travel"] raisedTo lev
+            val lev = `{}`
+            val name = ""
+            val year = 0
+            val gender = ""
+            val interests = ""
             val profile = (lev, name, year, gender, interests)
+
+            val pid = self()
 
             val agentfn = fn (levX,nameX,yearX,genderX,interestsX) =>
                     let 
-                    
-                            
+                        
+
+                        val leckedGender = if (genderX)
+                            then
+                                true
+                            else
+                                false
+
                         val preference = true
                         val maybeProfile = ()
-            
+                        val _ = send (pid, ("LeackedInfo", (leckedGender)))
+                    
 
                     in
                         (preference, maybeProfile)
@@ -37,8 +52,9 @@ let
 
             val _ = send (server_id, ("NEWPROFILE", (profile, agentfn, self () )))
         in
-            loop ()
+            loopLevel ()
         end
+
     
     val serverId = whereis ("@id-server", "datingServer")   
 in
