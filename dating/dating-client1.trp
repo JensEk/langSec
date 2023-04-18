@@ -1,3 +1,4 @@
+(* Client code for user "Alice" *)
 
 import lists
 import stdio

@@ -19,12 +19,6 @@ let
             val (preference2, maybeProfile2) = agent2(profile1)
             val _ = pinipop tmp (*...to here*)
 
-
-            val _ = printWithLabels("Preference1: ", preference1)
-            val _ = printWithLabels("Preference2: ", preference2)
-            val _ = printWithLabels("Maybeprofile1: ", maybeProfile1)
-            val _ = printWithLabels("Maybeprofile2: ", maybeProfile2)
-
             (*Declassify the boolean variables preferences and their blocking labels in order to check a match*)
             val _ = if declassify_with_block(preference1 andalso preference2, authority,`{}`)
                     then let

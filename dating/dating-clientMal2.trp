@@ -1,0 +1,57 @@
+(* Troupe code for a malicious client that monitors the time it takes for the server to respond, indicating if information is leaked. *)
+
+import lists
+import stdio
+import declassifyutil
+
+let 
+    fun loop () =
+
+                (* Measures time before client is waiting with the handler and until it gets a response from the server. Prints the estimated time and then exists the process *)
+                let 
+                    val _ = print "Waiting for side channel effect to reveal info..."   
+                    val t1 = getTime()
+                    val malResponse = receive [hn ("NEWMATCH", malResponse) => malResponse]
+                    val t2 = getTime()
+                    val _ = printWithLabels ("Side channel time: ", t2-t1)  
+                in
+                    exit(authority,0)             
+                end
+
+    fun client server_id =
+        let
+        
+            (*Define the profile of the user*)
+            val lev = `{}`
+            val name = "MALICIOUS2"
+            val year = 0
+            val gender = false
+            val interests = ""
+            val profile = (lev, name, year, gender, interests)
+            val pid = self()
+            
+
+            val agentfn = fn (levX,nameX,yearX,genderX,interestsX) =>
+                    let
+                        
+                        (* If match with the first malicious client then a match should be triggered in the server in order to end current process *)
+                        val preference = if nameX = "MALICIOUS1"
+                                then
+                                    true
+                                else
+                                    false
+                        
+                        val maybeProfile = () 
+                    in
+                        (preference, maybeProfile)
+                    end
+
+            val _ = send (server_id, ("NEWPROFILE", (profile, agentfn, self () )))
+        in
+            loop ()
+        end
+
+    val serverId = whereis ("@id-server", "datingServer")   
+in
+    spawn (fn () => client serverId)
+end
