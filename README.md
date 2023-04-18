@@ -20,3 +20,9 @@ Note that clientMal is constantly listening for new user to match with and will 
 
 ## To run the server together with the provided GoT clients, do the following:
 
+* cd ~/dating
+* Modify the dating-server.trp by removing the comment:  (* send (whereis ("@dispatcher", "dispatcher"), ("DISPATCH", thisNode)); *) on line 63.
+
+**Call the Troupe files using the makefile**
+* make dating-server-own 
+
